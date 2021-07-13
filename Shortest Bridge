@@ -1,0 +1,51 @@
+class Solution {
+public:
+    void dfs(vector<vector<int>> &grid,vector<pair<int,int>> &res,int x,int y)
+    {
+        if(x<0||y<0||x>=grid.size()||y>=grid[0].size()||grid[x][y]==0)
+            return;
+        grid[x][y]=0;
+        res.push_back({x,y});
+        dfs(grid,res,x-1,y);
+        dfs(grid,res,x+1,y);
+        dfs(grid,res,x,y-1);
+        dfs(grid,res,x,y+1);
+    }
+    int shortestBridge(vector<vector<int>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        
+        vector<pair<int,int>> f,s;
+        bool flag=1;
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(grid[i][j]==1)
+                {
+                    if(flag)
+                    {
+                        flag=0;
+                        dfs(grid,f,i,j);
+                    }
+                    else
+                    {
+                        dfs(grid,s,i,j);
+                    }
+                }
+                    
+            }
+        }
+        int min_dis=1e9;
+        for(auto &x:f)
+        {
+            for(auto &y:s)
+            {
+                int dis=abs(x.first-y.first)+abs(y.second-x.second);
+                min_dis=min(min_dis,dis);
+            }
+        }
+        return min_dis-1;
+        
+    }
+};
