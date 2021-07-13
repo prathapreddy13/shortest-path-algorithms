@@ -2,51 +2,48 @@ class Solution {
 public:
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
         
-        vector<vector<int>> dp(n, vector<int>(n, INT_MAX / 2));
-        for (int i = 0 ; i < n ; ++i) {
-            dp[i][i] = 0;
-        }
+        vector<vector<int>> mat(n,vector<int> (n,1e9));
         
-        for (const auto& e : edges) {
-            int s = e[0];
-            int d = e[1];
-            int c = e[2];
-            dp[s][d] = c;
-            dp[d][s] = c;
-        }
         
-        for (int k = 0 ; k < n ; ++k) {
-            for (int i = 0 ; i < n ; ++i) {
-                for (int j = 0 ; j < n ; ++j) {
-                    if (dp[i][j] > dp[i][k] + dp[k][j]) {
-                        dp[i][j] = dp[i][k] + dp[k][j];
+        for(auto &e:edges)
+        {
+            mat[e[0]][e[1]]=e[2];
+            mat[e[1]][e[0]]=e[2];
+        }
+        for(int i=0;i<n;i++)
+            mat[i][i]=0;
+        
+        for(int k=0;k<n;k++)
+        {
+            for(int i=0;i<n;i++)
+            {
+                for(int j=0;j<n;j++)
+                {
+                    if(mat[i][j]>mat[i][k]+mat[k][j])
+                    {
+                        mat[i][j]=mat[i][k]+mat[k][j];
+                        mat[j][i]=mat[i][k]+mat[k][j];
                     }
                 }
             }
         }
         
-        int min = INT_MAX;
-        vector<int> counts(n, 0);
-        for (int i = 0 ; i < n ; ++i) {
-            int count = 0;
-            for (int j = 0 ; j < n ; ++j) {
-                if (i == j) {
-                    continue;
-                }
-                if (dp[i][j] <= distanceThreshold) {
-                    ++count;
-                }
+        int ans=-1;
+        int count=2e9;
+        for(int i=0;i<n;i++)
+        {
+            int c=0;
+            for(int j=0;j<n;j++)
+            {
+                if(mat[i][j]<=distanceThreshold)
+                    c++;
             }
-            min = std::min(min, count);
-            counts[i] = count;
-        }
-        
-        for (int i = n - 1 ; i >= 0 ; --i) {
-            if (counts[i] == min) {
-                return i;
+            if(c<=count)
+            {
+                count=c;
+                ans=i;
             }
         }
-        
-        return -1;
+        return ans;
     }
 };
