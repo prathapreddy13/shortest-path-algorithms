@@ -1,0 +1,46 @@
+class Solution {
+public:
+    vector<vector<pair<int,int>>> adj;
+    int maxTime;
+    int ans=1e9;
+    int dest;
+    void dfs(int src,vector<int> &fees,int time,int fee,vector<bool> &vis)
+    {
+        vis[src]=1;
+        if(src==dest)
+        {
+            if(time<=maxTime)
+            {
+                ans=min(ans,fee);
+            }
+            vis[src]=0;
+            return;
+        }
+        for(auto &e:adj[src])
+        {
+            if(vis[e.first]==0)
+            {
+                dfs(e.first,fees,time+e.second,fee+fees[e.first],vis);
+            }
+        }
+        vis[src]=0;
+    }
+    int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
+        int n=passingFees.size();
+        this->maxTime=maxTime;
+        dest=n-1;
+        adj=vector<vector<pair<int,int>>> (n);
+        for(auto &e:edges)
+        {
+            adj[e[0]].push_back({e[1],e[2]});
+        }
+        vector<bool> vis(n);
+        int time=0;
+        int fee=passingFees[0];
+        dfs(0,passingFees,time,fee,vis);
+        if(ans!=1e9)
+        return ans;
+        return -1;
+        
+    }
+};
