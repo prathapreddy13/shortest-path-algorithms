@@ -1,0 +1,36 @@
+class Solution {
+public:
+    vector<vector<int>> ans;
+    void dfs(vector<vector<int>>& graph,int src,int tar,vector<int> &res,vector<bool> &vis)
+    {
+        vis[src]=1;
+        res.push_back(src);
+        if(src==tar)
+        {
+            
+            ans.push_back(res);
+            res.pop_back();
+            vis[src]=0;
+            return;
+        }
+         
+        for(auto &e:graph[src])
+        {
+            if(vis[e]==0)
+            {
+                dfs(graph,e,tar,res,vis);
+            }
+        }
+        vis[src]=0;
+        res.pop_back();
+        return;
+    }
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        int n=graph.size();
+        vector<int> res;
+        vector<bool> vis(n);
+        dfs(graph,0,n-1,res,vis);
+        return ans;
+        
+    }
+};
